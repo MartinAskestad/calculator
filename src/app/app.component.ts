@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { filter, fromEvent, map, tap } from 'rxjs';
 import { CalculatorService } from './calculator.service';
 
 @Component({
@@ -17,6 +18,12 @@ export class AppComponent {
   public set expression(value) {
     this._expression = value;
   }
+  keyPress$ = fromEvent<KeyboardEvent>(window, 'keyup').pipe(
+    map((e) => e.key),
+    filter((key) => '+-*/=.'.indexOf(key) > -1 || /^\d$/.test(key)),
+    map((key) => key.replace('/', '÷').replace('*', '×').replace('-', '−')),
+    tap((key) => this.appendOrSolveExpression(key))
+  );
 
   constructor(private calculator: CalculatorService) {}
 
@@ -24,6 +31,10 @@ export class AppComponent {
     e.preventDefault();
     const target = e.target as HTMLButtonElement;
     const text = target.innerText.replace('·', '.');
+    this.appendOrSolveExpression(text);
+  }
+
+  private appendOrSolveExpression(text: string) {
     if (text === 'C') {
       this.expression = '0';
       return;

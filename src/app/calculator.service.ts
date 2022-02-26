@@ -18,7 +18,6 @@ export class CalculatorService {
     const m = this.grammar.match(expression);
     if (m.succeeded()) {
       const res: number = this.semantics(m)['calc']();
-      console.log('res', res);
       return res;
     } else {
       console.error(m.message);
