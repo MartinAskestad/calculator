@@ -24,6 +24,10 @@ export class AppComponent {
       .replace('·', '.')
       .replace('×', '*')
       .replace('÷', '/');
+    if (text === 'C') {
+      this.expression = '0';
+      return;
+    }
     this.expression += text;
   }
 }
